@@ -64,6 +64,7 @@ const norm = (s) => s.replace(/\s+/g, "");
 function parseLedger(text) {
   const rows = new Map();
   const problems = [];
+  const aliasOwner = new Map();
   for (const line of text.split("\n")) {
     if (!/^\|\s*L\d{2}\s*\|/.test(line)) continue;
     const c = line.split("|").slice(1, -1).map((s) => s.trim());
@@ -77,7 +78,14 @@ function parseLedger(text) {
     if (!GRADES.includes(grade)) problems.push(`원장 ${id}: 확인 등급 「${grade}」 — 원문·대체원문·목차만 허용(미확인 행은 출고 불가)`);
     if (!["잦음", "-"].includes(recheck)) problems.push(`원장 ${id}: 재확인 칸은 잦음 또는 -`);
     const citeSet = cites === "-" ? [] : cites.split("·").map(norm).filter(Boolean);
-    const names = [source, ...(alias === "-" ? [] : alias.split("·"))].map((x) => x.trim()).filter(Boolean);
+    // 정식 이름(괄호·대시 뒤 설명을 뗀 것)과 약칭을 모두 이름으로 쓴다
+    const formal = source.split(" — ")[0].replace(/\([^)]*\)\s*$/, "").split(":")[0].trim();
+    const names = [...new Set([source, formal, ...(alias === "-" ? [] : alias.split("·"))].map((x) => x.trim()).filter(Boolean))];
+    for (const n of names.slice(1)) {
+      const owner = aliasOwner.get(n);
+      if (owner && owner !== id) problems.push(`원장 ${id}: 약칭 「${n}」이 ${owner}와 겹침`);
+      else aliasOwner.set(n, id);
+    }
     rows.set(id, { grade, cites: citeSet, names });
   }
   return { rows, problems };
@@ -97,6 +105,7 @@ const MAIN = [
   /\b409A\b/g,
   /별표\s?\d+/g,
   /\bBVS-[IVX]+\b/g,
+  /\bChapter\s\d+\b/g,
 ];
 const SUB = [
   /제\s?\d{1,3}[항호](?!\d)/g,
@@ -122,7 +131,7 @@ function nearestNameRows(line, at, rows) {
     if (i < 0) continue;
     const end = i + n.length;
     // 이름과 토큰 사이가 짧고(30자 이하) 다른 인용으로 끊기지 않아야 그 토큰의 법령명으로 본다
-    const gap = line.slice(end, at);
+    const gap = line.slice(end, at).replace(/\([^()]*\)/g, "");
     if (gap.length > 30 || /[,;\[\]()、]/.test(gap)) continue;
     if (!best || end > best.end || (end === best.end && n.length > best.len)) best = { end, len: n.length, ids: new Set([id]) };
     else if (end === best.end && n.length === best.len) best.ids.add(id);
@@ -144,7 +153,7 @@ function checkLine(line, rows) {
   const cites = known.flatMap((id) => rows.get(id).cites);
   for (const t of main) if (!cites.includes(t)) problems.push(`「${t}」가 ${ids.join(",")} 행의 인용 칸에 없음`);
   // 법령명-조문 짝은 조 단위 토큰(제N조·별표)에만 본다. 기준 번호(IVS·IFRS 등)는 토큰 자체가 기준 이름을 담는다
-  for (const { t, at } of tokens(line, [MAIN[0], /별표\s?\d+/g], true)) {
+  for (const { t, at } of tokens(line, [MAIN[0], /별표\s?\d+/g, /§\s?\d+(?:\.\d+[A-Z]*(?:-\d+)?)?/g, /\bSection\s\d+(?:\.\d+)*/g], true)) {
     const near = nearestNameRows(line, at, rows);
     if (!near) continue;
     const ok = [...near.ids].some((id) => known.includes(id) && rows.get(id).cites.includes(t));
@@ -170,7 +179,10 @@ function selfTest() {
     "| L01 | 가상세법 시행령 | 같은 법 시행령 | 제54조·제5-13조 | https://example.org | 2026-11-14 | 원문 | 잦음 |",
     "| L02 | 가상기준 | IVS | IVS 102 | https://example.org | 2026-11-14 | 목차 | - |",
     "| L03 | 가상법인세법 시행령 | - | 제89조 제2항·제89조·제52조 | https://example.org | 2026-11-14 | 원문 | - |",
-    "| L04 | 가상회사법 | - | § 262·Section 3.4·별표 1 | https://example.org | 2026-11-14 | 원문 | - |",
+    "| L04 | 가상회사법 | - | § 262·Section 3.4·별표 1·Chapter 11 | https://example.org | 2026-11-14 | 원문 | - |",
+    "| L05 | 가상공시규정(가상위원회 고시) | - | 제5-13조 | https://example.org | 2026-11-14 | 원문 | - |",
+    "| L06 | 가상인수규정(가상협회) | - | 제5조 | https://example.org | 2026-11-14 | 원문 | - |",
+    "| L10 | 가상파산법 | - | § 1129 | https://example.org | 2026-11-14 | 원문 | - |",
   ].join("\n"));
   const cases = [
     ["통과: 원장과 맞는 인용", "시행령 제54조 [L01]", true],
@@ -190,16 +202,24 @@ function selfTest() {
     ["통과: 띄어쓰기 없는 §", "가상회사법 §262 [L04]", true],
     ["실패: 원장에 없는 Section", "Section 3.5 [L04]", false],
     ["실패: 원장 id 없는 별표", "별표 1 참조", false],
+    ["실패: 괄호 붙은 정식 이름과 다른 행 조문", "가상공시규정 제5조 [L05][L06]", false],
+    ["통과: 괄호 붙은 정식 이름과 맞는 조문", "가상공시규정 제5-13조 [L05]", true],
+    ["실패: 원장 id 없는 Chapter", "미국 파산법 Chapter 11의 원칙", false],
+    ["통과: Chapter가 원장에 있음", "가상회사법 Chapter 11 [L04]", true],
+    ["실패: § 법령명 불일치", "가상회사법 § 1129 [L04][L10]", false],
+    ["실패: 이름과 조문 사이 괄호", "가상법인세법 시행령(개정) 제52조 [L03][L01]", false],
   ];
   let bad = 0;
   for (const [name, line, ok] of cases) {
     const got = checkLine(line, rows).length === 0;
     if (got !== ok) { bad++; console.error(`SELF-TEST FAIL ${name}: ${line}`); }
   }
+  const dup = parseLedger("| L07 | 가상A 시행령 | 같은 법 시행령 | 제1조 | https://example.org | 2026-11-14 | 원문 | - |\n| L08 | 가상B 시행령 | 같은 법 시행령 | 제2조 | https://example.org | 2026-11-14 | 원문 | - |");
+  if (!dup.problems.some((p) => p.includes("겹침"))) { bad++; console.error("SELF-TEST FAIL 겹치는 약칭을 잡지 못함"); }
   const { problems } = parseLedger("| L09 | 미확인 | - | 제1조 | https://example.org | 2026-11-14 | 대기 | - |");
   if (!problems.some((p) => p.includes("확인 등급"))) { bad++; console.error("SELF-TEST FAIL 미확인 등급 행을 잡지 못함"); }
   if (bad) process.exit(1);
-  console.log(`OK 자기시험 ${cases.length + 1}건`);
+  console.log(`OK 자기시험 ${cases.length + 2}건`);
 }
 
 // ---------- 시각 자료(R5) ----------

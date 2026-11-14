@@ -44,7 +44,7 @@ R1~R9는 go-develop과 같고 판정 대상만 영역에 맞췄다. R10~R14는 �
 | R7 | 너무 빠름·보강 필요·지루함 지원 | 세 상태의 신호와 대응이 규칙에 있고, 페르소나 세션에서 각각 다른 대응이 나온다. 판단이 상태 파일에 남는다 |
 | R8 | 이어가기 | 새 세션이 `learner/state.json`을 읽고 복습 질문으로 이어간다. `learner/`는 git 제외다 |
 | R9 | 몰입 | 튜터 채팅은 응답당 6줄 이내, 질문 하나, 답을 먼저 주지 않는다. 일상 동작이 `.claude/settings.json` 허용 목록에 있어 권한 창이 뜨지 않는다: `learner/state.json`·`learner/log.md` 쓰기, `learner/studio/**/*.html` 쓰기, `learner/lab/**` 쓰기(계산용 스프레드시트·스크립트), WebSearch, WebFetch(전 도메인 — 법령·기준 확인처는 아래 R11 목록), 첫 HTML 열기(OS별 명령) |
-| R10 | 국내법 중심 + 글로벌 비교 | 모든 모듈에 「국내 근거」와 「글로벌 비교」 칸이 비어 있지 않다(`tools/check.mjs`). 국내 근거는 법률·시행령·고시·기준 이름으로, 글로벌은 원 기준 기관의 기준으로 쓴다 |
+| R10 | 국내법 중심 + 글로벌 비교 | 모든 모듈에 「국내 근거」와 「글로벌 비교」 칸이 비어 있지 않다(`tools/check.mjs`). 국내 근거는 법률·시행령·고시·기준 이름으로, 글로벌은 원 기준 기관의 기준으로 쓴다. 예외: 선수 확인 모듈 F3(시간가치·위험)은 이 영역의 법령·기준이 아니라 공식 통계(한국은행 ECOS·미국 재무부 수익률)를 근거로 둔다 |
 | R11 | 근거 정확성 | 아래 「근거 원장과 검사」대로 한다. 요약: 리포의 모든 조문·기준 번호 인용은 `curriculum/sources.md` 원장 행 id를 달고, 그 행에 같은 번호·공식 URL·조회일·확인 등급이 있다. 검사기가 이를 기계적으로 대조하고, 틀린 예를 넣은 자기시험이 실패를 낸다. 원장은 독립 리뷰어가 재확인한다. 튜터 규칙에 「조문을 기억으로 말하지 않는다, 세션 중 공식 출처로 최신 여부를 확인하고 확인 시점을 말한다, 확인하지 못하면 그렇다고 말한다」가 있다 |
 | R12 | 실무 감각 | 「실무 관리자」 페르소나가 G3에 있다. 졸업 프로젝트 X 모듈마다 「산출물」(실제 업무 문서 이름)과 「검토 기준」(합격 판정 항목) 칸이 있다(`tools/check.mjs`). 튜터가 학습자의 실제 업무 상황을 예시로 쓴다 |
 | R13 | 겹침 경계 | 위 경계 표의 이웃 영역과 겹치는 모듈에 「경계·연결」 줄이 있다. G3에서 경계 주제가 나오면 튜터가 깊게 들어가지 않고 연결만 말한다(판정자) |
@@ -83,7 +83,7 @@ R1~R9는 go-develop과 같고 판정 대상만 영역에 맞췄다. R10~R14는 �
 | 옵션·실물옵션 | M8 |
 | 복합금융상품(RCPS·CB) | M9 |
 | 스타트업·VC | M10 |
-| 무형자산·PPA 측정 | M11 |
+| 무형자산·PPA 측정, 시너지 가치 측정 | M11 |
 | 손상검사 사용가치 | M12 |
 | 상증세법 시가·비상장주식 보충적 평가 | R1 |
 | 법인세법 시가 | R2 |
@@ -91,7 +91,7 @@ R1~R9는 go-develop과 같고 판정 대상만 영역에 맞췄다. R10~R14는 �
 | 주식매수청구가격·Delaware appraisal | R4 |
 | 신주 발행가·IPO 공모가·409A | R5 |
 | K-IFRS 공정가치 측정·IFRS 13·ASC 820 | R6 |
-| 회생 계속기업가치·청산가치 | R7 |
+| 회생 계속기업가치·청산가치, 미국 Chapter 11 비교 | R7 |
 | 수임·범위·독립성(수행기준·IVS 101·AICPA·ASA) | P1 |
 | 보고서 작성 | P2 |
 | 보고서 검토 | P3 |
@@ -105,7 +105,7 @@ R1~R9는 go-develop과 같고 판정 대상만 영역에 맞췄다. R10~R14는 �
 
 - go-develop과 같은 무런타임 하네스다. 파일은 `CLAUDE.md`, `tutor/*.md`, `.claude/skills/*`, `.claude/settings.json`, `curriculum/map.md`, `curriculum/sources.md`, `learner-template/`, `.gitignore`, `README.md`, `docs/build/`로 끝난다.
 - 예외: `tools/check.mjs`는 관리자 전용 검사기다. go-develop 검사에 R10·R11·R12 검사를 더한다.
-- 튜터의 근거 규칙은 `tutor/sources.md`에 둔다. 세션 중 확인처: law.go.kr, taxlaw.nts.go.kr(국세법령정보시스템), 금융위원회·금융감독원 규정 게시처, dart.fss.or.kr, kasb.or.kr(회계기준원), kicpa.or.kr, ivsc.org, ifrs.org, fasb.org, irs.gov, ecfr.gov, delcode.delaware.gov, privateequityvaluation.com(IPEV).
+- 튜터의 근거 규칙은 `tutor/sources.md`에 둔다. 세션 중 확인처: law.go.kr, taxlaw.nts.go.kr(국세법령정보시스템), 금융위원회·금융감독원 규정 게시처, dart.fss.or.kr, kasb.or.kr(회계기준원), kicpa.or.kr, ivsc.org, ifrs.org, fasb.org, irs.gov, ecfr.gov, govinfo.gov, uscode.house.gov, delcode.delaware.gov, privateequityvaluation.com(IPEV).
 - 졸업 프로젝트는 이수 판정 지점이다.
 
 ## 게이트 운영
