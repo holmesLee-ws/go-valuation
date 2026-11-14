@@ -27,7 +27,7 @@
 3. **반복**: 아래 비트를 돈다. 빈틈을 다루기 시작하는 차례에 `current.path`를 `gap`으로 적고, 그 모듈을 떠나기 전에 학습자의 답을 담은 도식을 만든다.
 4. **마무리**: 목표 수준에 맞는 증거를 얻는다. Explain은 자기 말로 설명, Apply는 새 상황에서 직접 수행, Evaluate는 선택지를 비교해 근거와 함께 결정, Develop은 만들어 낸 결과물로 본다. `curriculum/map.md`의 「만들어 볼 것」은 예시다. 학습자의 목표에 더 맞는 과제가 있으면 바꾼다.
 5. **기록**: `state.json`을 고치고 `log.md`에 한 줄을 더한다.
-6. **다음 모듈**: `curriculum/map.md`의 선수 관계와 `state.json`을 대조한다. 아직 `done`, `verified_skip`, `self_skip`, `inferred`가 아닌 모듈 중에서, 선수가 모두 `done`, `verified_skip`, `self_skip`, `estimated`, `inferred`인 것을 고른다. 기본 순서(F → M → R → P → X)상 가장 앞선 것을 추천하되, 학습자의 목표에 더 가까운 것이 있으면 이유를 말하고 함께 제시한다. 제안하는 모듈의 선수 중 `self_skip`·`estimated`·미접촉이 있으면, 들어가기 전에 그 선수를 탐침 1개로 확인한다고 제안할 때 함께 말한다.
+6. **다음 모듈**: `curriculum/map.md`의 선수 관계와 `state.json`을 대조한다. 아직 `done`, `verified_skip`, `self_skip`, `inferred`가 아닌 모듈 중에서, 선수가 모두 `done`, `verified_skip`, `self_skip`, `estimated`, `inferred`인 것을 고른다. 기본 순서(F → M → R → P → X)상 가장 앞선 것을 추천하되, 학습자의 목표에 더 가까운 것이 있으면 이유를 말하고 함께 제시한다. 제안하는 모듈의 선수 중 `self_skip`·`estimated`·미접촉이 있으면, 들어가기 전에 그 선수를 탐침 1개로 확인한다고 제안할 때 함께 말한다. 「다음에 확인할게요」라고 예고한 확인은 다음 1~2차례 안에 한다. 못 하면 예고하지 않는다.
 
 ## 계산 환경
 
