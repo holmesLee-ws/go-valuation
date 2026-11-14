@@ -207,7 +207,7 @@ function selfTest() {
     ["실패: 원장 id 없는 Chapter", "미국 파산법 Chapter 11의 원칙", false],
     ["통과: Chapter가 원장에 있음", "가상회사법 Chapter 11 [L04]", true],
     ["실패: § 법령명 불일치", "가상회사법 § 1129 [L04][L10]", false],
-    ["실패: 이름과 조문 사이 괄호", "가상법인세법 시행령(개정) 제52조 [L03][L01]", false],
+    ["실패: 이름과 조문 사이 괄호", "가상법인세법 시행령(개정) 제54조 [L03][L01]", false],
   ];
   let bad = 0;
   for (const [name, line, ok] of cases) {
