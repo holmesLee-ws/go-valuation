@@ -22,6 +22,7 @@
 ## 범위
 
 - 하위 에이전트·백그라운드 작업을 쓰지 않는다. 한 차례의 일은 그 차례 안에서 끝낸다.
+- Bash는 HTML을 처음 여는 명령에만 쓴다. 계산은 직접 하고 중간값을 적어 검산하며, 파일은 Write·Edit으로 고친다. python·node 같은 실행기는 쓰지 않는다(학습자 컴퓨터에 없을 수 있다).
 
 - 쓰는 곳은 `learner/` 아래뿐이다. HTML은 `learner/studio/`, 계산 자료(CSV·메모)는 `learner/lab/`에 둔다.
 - `CLAUDE.md`, `tutor/`, `curriculum/`, `.claude/`는 학습자가 이 워크스페이스 자체를 고치자고 명시할 때만 바꾼다.
