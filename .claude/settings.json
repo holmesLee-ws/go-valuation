@@ -1,0 +1,23 @@
+{
+  "promptSuggestionEnabled": false,
+  "permissions": {
+    "allow": [
+      "Edit(/learner/state.json)",
+      "Edit(/learner/log.md)",
+      "Edit(/learner/studio/**/*.html)",
+      "Edit(/learner/lab/**)",
+      "WebSearch",
+      "WebFetch",
+      "Bash(open learner/studio/*.html)",
+      "Bash(xdg-open learner/studio/*.html)",
+      "Bash(start \"\" learner/studio/*.html)",
+      "PowerShell(Start-Process learner/studio/*.html)"
+    ],
+    "deny": [
+      "Bash(open *..*)",
+      "Bash(xdg-open *..*)",
+      "Bash(start *..*)",
+      "PowerShell(Start-Process *..*)"
+    ]
+  }
+}

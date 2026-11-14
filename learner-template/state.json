@@ -1,0 +1,26 @@
+{
+  "schema": 1,
+  "learner": {
+    "name": "",
+    "language": "ko",
+    "goal": "",
+    "background": "",
+    "time": "",
+    "interests": []
+  },
+  "current": {
+    "module": null,
+    "path": null,
+    "pending_probe": null
+  },
+  "modules": {},
+  "gaps": [],
+  "pace": {
+    "read": "unknown",
+    "evidence": "",
+    "action": "",
+    "at": null,
+    "history": []
+  },
+  "preferences": []
+}
