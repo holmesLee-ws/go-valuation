@@ -218,8 +218,11 @@ function selfTest() {
   if (!dup.problems.some((p) => p.includes("겹침"))) { bad++; console.error("SELF-TEST FAIL 겹치는 약칭을 잡지 못함"); }
   const { problems } = parseLedger("| L09 | 미확인 | - | 제1조 | https://example.org | 2026-11-14 | 대기 | - |");
   if (!problems.some((p) => p.includes("확인 등급"))) { bad++; console.error("SELF-TEST FAIL 미확인 등급 행을 잡지 못함"); }
+  const visual = findVisualAssets(["자료 폴더/한글 도식.html", "tools/check.mjs", "a/b.SVG", "x.htm", "y.webp", "curriculum/map.md", "learner-template/z.js"]);
+  if (visual.join("|") !== "자료 폴더/한글 도식.html|a/b.SVG|x.htm|y.webp|learner-template/z.js") { bad++; console.error(`SELF-TEST FAIL 시각 자료 검출 ${visual}`); }
+  if (!findTemplateMarkup("설명\n\n    <svg viewBox=0>\n") || !findTemplateMarkup("```\n<!DOCTYPE html>\n```") || findTemplateMarkup("본문에 svg라는 단어")) { bad++; console.error("SELF-TEST FAIL 코드 블록 마크업 검출"); }
   if (bad) process.exit(1);
-  console.log(`OK 자기시험 ${cases.length + 2}건`);
+  console.log(`OK 자기시험 ${cases.length + 4}건`);
 }
 
 // ---------- 시각 자료(R5) ----------
@@ -228,8 +231,11 @@ function findVisualAssets(files) {
   return files.filter((f) => /\.(html?|css|svg|png|jpe?g|gif|webp|avif)$/i.test(f) || (/\.m?js$/i.test(f) && !allowedJs.test(f)));
 }
 
+const MARKUP = /<(!doctype|html|svg|style|canvas|script)\b/i;
 function findTemplateMarkup(text) {
-  for (const m of text.matchAll(/(```|~~~)[\s\S]*?\1/g)) if (/<(!doctype|html|svg|style|canvas|script)\b/i.test(m[0])) return true;
+  for (const m of text.matchAll(/(```|~~~)[\s\S]*?\1/g)) if (MARKUP.test(m[0])) return true;
+  // 4칸 들여쓴 코드 블록
+  for (const line of text.split("\n")) if (/^( {4}|\t)/.test(line) && MARKUP.test(line)) return true;
   return false;
 }
 

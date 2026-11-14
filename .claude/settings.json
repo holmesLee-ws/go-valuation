@@ -17,7 +17,11 @@
       "Bash(open *..*)",
       "Bash(xdg-open *..*)",
       "Bash(start *..*)",
-      "PowerShell(Start-Process *..*)"
+      "PowerShell(Start-Process *..*)",
+      "Bash(open learner/studio/* *)",
+      "Bash(xdg-open learner/studio/* *)",
+      "Bash(start \"\" learner/studio/* *)",
+      "PowerShell(Start-Process learner/studio/* *)"
     ]
   }
 }
