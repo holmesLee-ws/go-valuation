@@ -21,7 +21,8 @@
       "Bash(open learner/studio/* *)",
       "Bash(xdg-open learner/studio/* *)",
       "Bash(start \"\" learner/studio/* *)",
-      "PowerShell(Start-Process learner/studio/* *)"
+      "PowerShell(Start-Process learner/studio/* *)",
+      "Agent"
     ]
   }
 }
