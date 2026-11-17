@@ -8,7 +8,7 @@
 
 ## 시작하기
 
-준비물은 Git, [GitHub CLI](https://cli.github.com)(`gh`), Claude Code 또는 Claude Desktop입니다. 비공개 리포이므로 먼저 GitHub에서 보낸 초대를 수락하고, 터미널에서 `gh auth login`으로 로그인합니다. 다른 설치는 필요 없습니다. 계산은 평소 쓰는 엑셀·구글 시트·계산기로 합니다.
+준비물은 Git, [GitHub CLI](https://cli.github.com)(`gh`), Claude Code 또는 Claude Desktop입니다. 공개 리포라 초대 없이 받을 수 있습니다. 터미널에서 `gh auth login`으로 한 번 로그인합니다. 다른 설치는 필요 없습니다. 계산은 평소 쓰는 엑셀·구글 시트·계산기로 합니다.
 
 ```bash
 cd ~/Desktop
